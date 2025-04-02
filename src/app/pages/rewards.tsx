@@ -76,12 +76,12 @@ export default function Page() {
                     
 
                 <Drawer>
-                  <DrawerTrigger asChild>
-                  <Button variant="outline" className="flex items-center gap-2">
-                  How To Earn
-                        </Button>
-                     
-                </DrawerTrigger>
+                <DrawerTrigger asChild>
+                <Button className="flex items-center gap-2 bg-green-900 text-white hover:bg-green-800 ">
+  How To Earn
+</Button>
+
+  </DrawerTrigger>
                 <DrawerContent>
                   <div className="mx-auto w-full max-w-sm">
                     <DrawerHeader>
@@ -126,11 +126,12 @@ export default function Page() {
               </Drawer>
 
                     <Drawer>
-                      <DrawerTrigger asChild>
-                      <Button variant="outline" className="flex items-center gap-2">
-                      Redeem Points
-                        </Button>
-                      </DrawerTrigger>
+                    <DrawerTrigger asChild>
+                    <Button className="flex items-center gap-2 bg-green-900 text-white hover:bg-green-800 ">
+  Redeem Points
+</Button>
+
+    </DrawerTrigger>
                       <DrawerContent>
                         <div className="mx-auto w-full max-w-sm">
                           <DrawerHeader>
@@ -196,7 +197,7 @@ export default function Page() {
                 <div className="flex justify-center">
 
                 {/* Tabs Section */}
-                <Tabs defaultValue="available" className="w-full ">
+                <Tabs defaultValue="available" className="w-full">
                   <TabsList className="grid grid-cols-3 mb-6">
                     <TabsTrigger value="available">Rewards</TabsTrigger>
                     <TabsTrigger value="history">History</TabsTrigger>
@@ -618,7 +619,7 @@ export default function Page() {
                         <p className="text-sm">Earn 1,000 points for each friend who signs up and makes a purchase.</p>
                       </CardContent>
                       <CardFooter>
-                        <Button variant="secondary" className="w-full">Share Referral Link</Button>
+                        <Button variant="secondary" className="w-full bg-green-900 text-white hover:bg-green-900">Share Referral Link</Button>
                       </CardFooter>
                     </Card>
                     
@@ -630,7 +631,7 @@ export default function Page() {
                         <p className="text-sm">Earn 500 points by completing all sections of your profile.</p>
                       </CardContent>
                       <CardFooter>
-                        <Button variant="secondary" className="w-full">Update Profile</Button>
+                        <Button variant="secondary" className="w-full bg-green-900 text-white hover:bg-green-800">Update Profile</Button>
                       </CardFooter>
                     </Card>
                     
@@ -642,7 +643,7 @@ export default function Page() {
                         <p className="text-sm">Earn 200 points for each product review you submit with photos.</p>
                       </CardContent>
                       <CardFooter>
-                        <Button variant="secondary" className="w-full">Write a Review</Button>
+                        <Button variant="secondary" className="w-full bg-green-900 text-white hover:bg-green-800">Write a Review</Button>
                       </CardFooter>
                     </Card>
                   </div>
