@@ -47,6 +47,8 @@ export default function Page() {
           </header>
 
           <WorldMap
+            lineColor="#0a5f38"
+
           dots={[
             {
               start: {
@@ -84,7 +86,7 @@ export default function Page() {
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0 justify-center items-center">
             {/* Main Content */}
             <div className="text-center mt-16">
-              <h1 className="text-4xl font-bold text mb-4">
+              <h1 className="text-4xl font-bold text mb-4 text-green-600 dark:text-green-600">
                 Welcome to the EcoMiles!
               </h1>
               <p className="text-lg text mb-6 max-w-3xl mx-auto">

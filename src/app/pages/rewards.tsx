@@ -47,11 +47,11 @@ export default function Page() {
                 <Breadcrumb>
                   <BreadcrumbList>
                     <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                      <BreadcrumbLink href="/" className="text-green-800 dark:text-green-300">Home</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                      <BreadcrumbPage>Rewards</BreadcrumbPage>
+                      <BreadcrumbPage className="text-green-800 dark:text-green-200" >Rewards</BreadcrumbPage>
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
@@ -92,8 +92,8 @@ export default function Page() {
                     </DrawerHeader>
                     <div className="p-6 space-y-6">
                       <div className="flex flex-col items-center">
-                        <div className="bg-purple-100 dark:bg-purple-900 p-3 rounded-full mb-2">
-                          <Trophy className="h-6 w-6 text-purple-600 dark:text-purple-300" />
+                        <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full mb-2">
+                          <Trophy className="h-6 w-6 text-green-600 dark:text-green-300" />
                         </div>
                         <h3 className="font-medium text-center">Win a Challenge</h3>
                         <p className="text-sm text-center text-muted-foreground">
@@ -102,8 +102,8 @@ export default function Page() {
                       </div>
                       
                       <div className="flex flex-col items-center">
-                        <div className="bg-purple-100 dark:bg-purple-900 p-3 rounded-full mb-2">
-                          <Users className="h-6 w-6 text-purple-600 dark:text-purple-300" />
+                        <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full mb-2">
+                          <Users className="h-6 w-6 text-green-600 dark:text-green-300" />
                         </div>
                         <h3 className="font-medium text-center">Participate in Challenges</h3>
                         <p className="text-sm text-center text-muted-foreground">
@@ -112,8 +112,8 @@ export default function Page() {
                       </div>
                       
                       <div className="flex flex-col items-center">
-                        <div className="bg-purple-100 dark:bg-purple-900 p-3 rounded-full mb-2">
-                          <Target className="h-6 w-6 text-purple-600 dark:text-purple-300" />
+                        <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full mb-2">
+                          <Target className="h-6 w-6 text-green-600 dark:text-green-300" />
                         </div>
                         <h3 className="font-medium text-center">Reach goals in Challenges</h3>
                         <p className="text-sm text-center text-muted-foreground">
@@ -152,7 +152,9 @@ export default function Page() {
                               <p className="text-sm text-muted-foreground mt-1">ID: #38291-REW</p>
                             </div>
                             
-                            <Button className="w-full">Download QR Code</Button>
+                            <Button className="w-full bg-green-900 text-white ">
+  Download QR Code
+</Button>
                           </div>
                         </div>
                       </DrawerContent>
@@ -161,7 +163,7 @@ export default function Page() {
                 </div>
                 
                 {/* Points Summary Card */}
-                <Card className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950">
+                <Card className="bg-gradient-to-br from-indigo-50 to-green-50 dark:from-indigo-950 dark:to-green-950">
                   <CardContent className="p-6 md:p-8">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                       <div className="flex flex-col items-center md:items-start gap-2">
@@ -207,7 +209,7 @@ export default function Page() {
                       {/* Reward Card 1 */}
                       <Drawer>
                         <DrawerTrigger asChild>
-                          <Card className="cursor-pointer hover:border-blue-500 transition-all duration-200">
+                          <Card className="cursor-pointer hover:border-green-500 transition-all duration-200">
                             <CardHeader className="pb-3">
                               <CardTitle>$10 Store Credit</CardTitle>
                               <CardDescription>Valid for 30 days after redemption</CardDescription>
@@ -225,7 +227,7 @@ export default function Page() {
                                     strokeWidth="2"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
-                                    className="text-blue-500"
+                                    className="text-green-500"
                                   >
                                     <path d="M12 2v20" />
                                     <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
@@ -258,7 +260,8 @@ export default function Page() {
                                 <p className="text-lg font-medium mt-2">1,000 points</p>
                               </div>
                               
-                              <Button className="w-full">Redeem Reward</Button>
+                              <Button className="w-full bg-green-900 text-white ">
+                              Redeem Reward</Button>
                             </div>
                           </div>
                         </DrawerContent>
@@ -267,7 +270,7 @@ export default function Page() {
                       {/* Reward Card 2 */}
                       <Drawer>
                         <DrawerTrigger asChild>
-                          <Card className="cursor-pointer hover:border-blue-500 transition-all duration-200">
+                          <Card className="cursor-pointer hover:border-green-500 transition-all duration-200">
                             <CardHeader className="pb-3">
                               <CardTitle>Free Coffe</CardTitle>
                               <CardDescription>On your next visit</CardDescription>
@@ -285,7 +288,7 @@ export default function Page() {
                                     strokeWidth="2"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
-                                    className="text-blue-500"
+                                    className="text-green-500"
                                   >
                                     <path d="M12 2v20" />
                                     <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
@@ -318,7 +321,8 @@ export default function Page() {
                                 <p className="text-lg font-medium mt-2">500 points</p>
                               </div>
                               
-                              <Button className="w-full">Redeem Reward</Button>
+                              <Button className="w-full bg-green-900 text-white ">
+                              Redeem Reward</Button>
                             </div>
                           </div>
                         </DrawerContent>
@@ -346,7 +350,7 @@ export default function Page() {
                                 strokeWidth="2"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                className="text-blue-500"
+                                className="text-green-500"
                               >
                                 <path d="M12 2v20" />
                                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />

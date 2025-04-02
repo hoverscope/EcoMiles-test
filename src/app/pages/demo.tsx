@@ -5,7 +5,6 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-
 } from "@/components/ui/breadcrumb"
 import {
   SidebarInset,
@@ -107,12 +106,11 @@ export default function Page() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                  <BreadcrumbLink href="/" className="text-green-800 dark:text-green-200">Home</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
-
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/demo">Transport</BreadcrumbLink>
+                  <BreadcrumbLink href="/demo" className="text-green-800 dark:text-green-200">Transport</BreadcrumbLink>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -122,8 +120,8 @@ export default function Page() {
           
           <div className="container max-w-5xl mx-auto py-8 px-4">
             <div className="text-center mb-8">
-              <Badge className="mb-3" variant="outline">Transport Options</Badge>
-              <h1 className="text-4xl font-bold tracking-tight mb-3">Choose Your Ride</h1>
+              <Badge className="mb-3 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300" variant="outline">Transport Options</Badge>
+              <h1 className="text-4xl font-bold tracking-tight mb-3 text-green-800 dark:text-green-00">Choose Your Ride</h1>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                 Select the perfect transportation method for your journey from our range of options.
               </p>
@@ -138,7 +136,9 @@ export default function Page() {
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-xl">{transport.label}</CardTitle>
-                      <transport.icon className="h-6 w-6 text-muted-foreground" />
+                      <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full">
+                        <transport.icon className="h-6 w-6 text-green-600 dark:text-green-300" />
+                      </div>
                     </div>
                     <CardDescription>{transport.description}</CardDescription>
                   </CardHeader>
@@ -146,8 +146,8 @@ export default function Page() {
                     <div className="grid grid-cols-3 gap-2">
                       {transport.stats.map((stat, index) => (
                         <div key={index} className="flex flex-col items-center justify-center text-center p-2">
-                          <div className="bg-muted rounded-full p-2 mb-2">
-                            <stat.icon className="h-4 w-4" />
+                          <div className="bg-green-100 dark:bg-green-900 p-2 rounded-full mb-2">
+                            <stat.icon className="h-4 w-4 text-green-600 dark:text-green-300" />
                           </div>
                           <div className="text-xs text-muted-foreground">{stat.label}</div>
                           <div className="font-medium text-sm">{stat.value}</div>
