@@ -38,13 +38,21 @@ const data = {
         {
           title: "Rides",
           url: "/demo",
+          
         },
           {
             title: "Rewards",
             url: "/rewards",
-          }
+          },
+          {
+            title: "Oboarding",
+            url: "/on-board",
+          },
+
       ],
     },
+    
+    
   ],
 }
 

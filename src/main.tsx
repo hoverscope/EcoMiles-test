@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'  // Import neces
 import './index.css'
 import App from './App.tsx'
 import Demo from './app/pages/demo.tsx'
+import Onboarding from './app/pages/onboarding.tsx'
+
 import Rewards from './app/pages/rewards.tsx'
 
 
@@ -21,6 +23,8 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<App />} />
         <Route path="/demo" element={<Demo />} />
         <Route path="/rewards" element={<Rewards />} />
+        <Route path="/on-board" element={<Onboarding />} />
+
 
 
         
