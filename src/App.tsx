@@ -87,7 +87,7 @@ export default function Page() {
             {/* Main Content */}
             <div className="text-center mt-16">
               <h1 className="text-4xl font-bold text mb-4 text-green-600 dark:text-green-600">
-                Welcome to the EcoMiles!
+                Welcome to the Green Miles
               </h1>
               <p className="text-lg text mb-6 max-w-3xl mx-auto">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.
