@@ -23,7 +23,7 @@ import {
   CardDescription 
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { TrainFront, Car, Bike, Bus, MapPin, Clock, Users,TramFront,CarTaxiFront } from "lucide-react"
+import { TrainFront, Car, Bike, Bus, MapPin, Clock, Users, TramFront, CarTaxiFront, Award } from "lucide-react"
 import { useState } from "react" 
 
 export default function Page() {
@@ -34,60 +34,72 @@ export default function Page() {
       icon: Car, 
       label: "Car", 
       description: "Door-to-door convenience with full control over your route and schedule",
+      points: 5,
       stats: [
         { icon: Clock, label: "Average travel time", value: "-" },
         { icon: Users, label: "Capacity", value: "1-5 people" },
-        { icon: MapPin, label: "Custom", value: "-" }
+        { icon: MapPin, label: "Custom", value: "-" },
+        { icon: Award, label: "Points", value: "5 pts" }
       ]
     },
     { 
       icon: Bike, 
       label: "Bicycle", 
       description: "Zero-emission travel for short distances, avoiding traffic jams",
+      points: 30,
       stats: [
         { icon: Clock, label: "Average travel time", value: "-" },
         { icon: Users, label: "Capacity", value: "1 person" },
-        { icon: MapPin, label: "Pick-up", value: "Self-service" }
+        { icon: MapPin, label: "Pick-up", value: "Self-service" },
+        { icon: Award, label: "Points", value: "30 pts" }
       ]
     },
     { 
       icon: Bus, 
       label: "Bus", 
       description: "Budget-friendly shared transit with dedicated lanes in some areas",
+      points: 20,
       stats: [
         { icon: Clock, label: "Average travel time", value: "-" },
         { icon: Users, label: "Capacity", value: "30+ people" },
-        { icon: MapPin, label: "Pick-up", value: "Designated stops" }
+        { icon: MapPin, label: "Pick-up", value: "Designated stops" },
+        { icon: Award, label: "Points", value: "20 pts" }
       ]
     },
     { 
       icon: TrainFront, 
       label: "Metro", 
       description: "High-speed underground rail for predictable inner-city travel",
+      points: 25,
       stats: [
         { icon: Clock, label: "Average travel time", value: "-" },
         { icon: Users, label: "Capacity", value: "100+ people" },
-        { icon: MapPin, label: "Pick-up", value: "Scheduled" }
+        { icon: MapPin, label: "Pick-up", value: "Scheduled" },
+        { icon: Award, label: "Points", value: "25 pts" }
       ]
     },
     { 
       icon: TramFront, 
       label: "Tram", 
       description: "Eco-friendly light rail with frequent stops in urban centers",
+      points: 25,
       stats: [
         { icon: Clock, label: "Average travel time", value: "-" },
         { icon: Users, label: "Capacity", value: "100+ people" },
-        { icon: MapPin, label: "Pick-up", value: "Scheduled" }
+        { icon: MapPin, label: "Pick-up", value: "Scheduled" },
+        { icon: Award, label: "Points", value: "25 pts" }
       ]
     },
     { 
       icon: CarTaxiFront, 
       label: "Ride Share", 
       description: "On-demand private rides with flexible pickup/drop-off points",
+      points: 10,
       stats: [
         { icon: Clock, label: "Average travel time", value: "-" },
         { icon: Users, label: "Capacity", value: "2-3 people" },
-        { icon: MapPin, label: "Pick-up", value: "On-demand" } // Changed from "Scheduled"
+        { icon: MapPin, label: "Pick-up", value: "On-demand" },
+        { icon: Award, label: "Points", value: "10 pts" }
       ]
     }
   ]
@@ -123,7 +135,7 @@ export default function Page() {
               <Badge className="mb-3 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300" variant="outline">Transport Options</Badge>
               <h1 className="text-4xl font-bold tracking-tight mb-3 text-green-800 dark:text-green-00">Choose Your Ride</h1>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Select the perfect transportation method for your journey from our range of options.
+                Select the perfect transportation method for your journey from our range of options and earn reward points.
               </p>
             </div>
 
@@ -135,7 +147,13 @@ export default function Page() {
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl">{transport.label}</CardTitle>
+                      <div>
+                        <CardTitle className="text-xl">{transport.label}</CardTitle>
+                        <div className="mt-1 flex items-center">
+                          <Award className="h-4 w-4 text-yellow-500 mr-1" />
+                          <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">{transport.points} points</span>
+                        </div>
+                      </div>
                       <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full">
                         <transport.icon className="h-6 w-6 text-green-600 dark:text-green-300" />
                       </div>
@@ -143,7 +161,7 @@ export default function Page() {
                     <CardDescription>{transport.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="pb-3">
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-4 gap-2">
                       {transport.stats.map((stat, index) => (
                         <div key={index} className="flex flex-col items-center justify-center text-center p-2">
                           <div className="bg-green-100 dark:bg-green-900 p-2 rounded-full mb-2">
@@ -174,7 +192,7 @@ export default function Page() {
                 disabled={!selectedTransport}
                 className="px-8"
               >
-                Continue with {selectedTransport?.label || "Selection"}
+                Continue with {selectedTransport?.label || "Selection"} {selectedTransport && `(+${selectedTransport.points} pts)`}
               </Button>
             </div>
           </div>
