@@ -48,6 +48,10 @@ const data = {
             title: "Oboarding",
             url: "/on-board",
           },
+          {
+            title: "Challenges",
+            url: "/challenges",
+          },
 
       ],
     },

@@ -76,13 +76,19 @@ export default function Page() {
             <div className="flex items-center gap-2 px-4">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
+              
               <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">Home</BreadcrumbLink>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/" className="text-green-800 dark:text-green-200">Home</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/demo" className="text-green-800 dark:text-green-200">Onbaording</BreadcrumbLink>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+
             </div>
             <div className="flex-1" />
 
@@ -230,7 +236,7 @@ export default function Page() {
         
         <CardFooter className="flex justify-between pt-6">
           <Button variant="outline">Cancel</Button>
-          <Button onClick={simulateUpload} >Submit Verification</Button>
+          <Button onClick={simulateUpload} className="bg-green-900 text-white hover:bg-green-800">Submit Verification</Button>
         </CardFooter>
       </Card>
     </div>

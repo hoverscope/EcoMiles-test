@@ -45,16 +45,16 @@ export default function Page() {
           <header className="flex h-16 items-center gap-2 px-4">
                 <SidebarTrigger className="-ml-1" />
                 <Breadcrumb>
-                  <BreadcrumbList>
-                    <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="/" className="text-green-800 dark:text-green-300">Home</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage className="text-green-800 dark:text-green-200" >Rewards</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/" className="text-green-800 dark:text-green-200">Home</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/demo" className="text-green-800 dark:text-green-200">Rewards</BreadcrumbLink>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
               <div className="flex-1" />
 
               <div className="ml-auto mr-4">
@@ -105,9 +105,9 @@ export default function Page() {
                         <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full mb-2">
                           <Users className="h-6 w-6 text-green-600 dark:text-green-300" />
                         </div>
-                        <h3 className="font-medium text-center">Participate in Challenges</h3>
+                        <h3 className="font-medium text-center">Sustainable Transport</h3>
                         <p className="text-sm text-center text-muted-foreground">
-                          You can receive points by participation on any challenge you like.
+                          Use a more Sustainable mode of transport to earn points!
                         </p>
                       </div>
                       
@@ -198,10 +198,9 @@ export default function Page() {
 
                 {/* Tabs Section */}
                 <Tabs defaultValue="available" className="w-full">
-                  <TabsList className="grid grid-cols-3 mb-6">
+                  <TabsList className="grid grid-cols-2 mb-6">
                     <TabsTrigger value="available">Rewards</TabsTrigger>
                     <TabsTrigger value="history">History</TabsTrigger>
-                    <TabsTrigger value="perks">Perks</TabsTrigger>
                   </TabsList>
                   
                   {/* Available Rewards Tab */}
@@ -329,39 +328,7 @@ export default function Page() {
                         </DrawerContent>
                       </Drawer>
 
-                      {/* Reward Card 3 */}
-                      <Card>
-                        <CardHeader className="pb-3">
-                          <div className="flex items-center justify-between">
-                            <CardTitle>Premium Membership</CardTitle>
-                            <Badge variant="outline" className="text-yellow-500 border-yellow-500">Gold Only</Badge>
-                          </div>
-                          <CardDescription>1 month of premium benefits</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex justify-between items-center">
-                            <div className="flex items-center gap-2">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="text-green-500"
-                              >
-                                <path d="M12 2v20" />
-                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                              </svg>
-                              <span className="font-medium">2,500 points</span>
-                            </div>
-                            <Button size="sm" variant="outline" disabled>Unavailable</Button>
-                          </div>
-                        </CardContent>
-                      </Card>
+                     
                     </div>
                   </TabsContent>
                   
@@ -616,7 +583,7 @@ export default function Page() {
                         <CardTitle className="text-lg">Refer a Friend</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm">Earn 1,000 points for each friend who signs up and makes a purchase.</p>
+                        <p className="text-sm">Earn 1,000 points for each friend who signs up</p>
                       </CardContent>
                       <CardFooter>
                         <Button variant="secondary" className="w-full bg-green-900 text-white hover:bg-green-900">Share Referral Link</Button>
@@ -635,17 +602,7 @@ export default function Page() {
                       </CardFooter>
                     </Card>
                     
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">Write a Review</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm">Earn 200 points for each product review you submit with photos.</p>
-                      </CardContent>
-                      <CardFooter>
-                        <Button variant="secondary" className="w-full bg-green-900 text-white hover:bg-green-800">Write a Review</Button>
-                      </CardFooter>
-                    </Card>
+                   
                   </div>
                 </div>
               </div>

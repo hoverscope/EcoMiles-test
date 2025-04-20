@@ -7,6 +7,8 @@ import Demo from './app/pages/demo.tsx'
 import Onboarding from './app/pages/onboarding.tsx'
 
 import Rewards from './app/pages/rewards.tsx'
+import Challenges from './app/pages/challenges.tsx'
+
 
 
 
@@ -24,6 +26,8 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/demo" element={<Demo />} />
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/on-board" element={<Onboarding />} />
+        <Route path="/challenges" element={<Challenges />} />
+
 
 
 
