@@ -149,25 +149,28 @@ export default function Page() {
     </div>
     
     <Card>
-      <CardHeader>
-        <CardTitle>Upcoming Competition</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center gap-4">
-          <div className="bg-green-100 dark:bg-green-900/40 p-4 rounded-lg">
-            <Calendar className="h-8 w-8 text-green-700" />
-          </div>
-          <div>
-            <h3 className="font-medium text-lg">Summer Sustainable Travel Festival</h3>
-            <p className="text-muted-foreground">Starts May 20, 2025</p>
-            <p className="mt-2">Grand prize: Electric scooter and sustainability kit</p>
-          </div>
-          <div className="ml-auto">
-            <Button>Pre-register</Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+  <CardHeader>
+    <CardTitle>Upcoming Competition</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+      <div className="bg-green-100 dark:bg-green-900/40 p-4 rounded-lg w-fit">
+        <Calendar className="h-8 w-8 text-green-700" />
+      </div>
+
+      <div className="flex-1">
+        <h3 className="font-medium text-lg">Summer Sustainable Travel Festival</h3>
+        <p className="text-muted-foreground">Starts May 20, 2025</p>
+        <p className="mt-2">Grand prize: Electric scooter and sustainability kit</p>
+      </div>
+
+      <div className="sm:ml-auto">
+        <Button className="w-full sm:w-auto bg-green-900 text-white hover:bg-green-800">Pre-register</Button>
+      </div>
+    </div>
+  </CardContent>
+</Card>
+
   </div>
 </TabsContent>
               
