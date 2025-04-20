@@ -18,17 +18,19 @@ import {
 import { ThemeProvider } from "@/components/theme-provider"
 import { ModeToggle } from "@/components/mode-toggle"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Upload, Check, Bike, Train, Trophy, Clock, Calendar } from 'lucide-react';
+import { AlertCircle, Upload, Check, Bike, Train, Trophy, Clock, Calendar, ArrowUp, ArrowRight } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import Plot from 'react-plotly.js';
 
 export default function Page() {
   const [questProgress, setQuestProgress] = useState({
@@ -36,6 +38,16 @@ export default function Page() {
     metroDaily: 40,
     walkingWeekly: 60,
     carpoolWeekly: 15
+  });
+
+  const [leaderboardData, setLeaderboardData] = useState({
+    labels: ['Sarah K.', 'You', 'Michael R.', 'Priya T.'],
+    values: [1865, 1760, 1620, 1485],
+    colors: ['#84cc16', '#22c55e', '#10b981', '#14b8a6'],
+    rank: 2,
+    pointsToNext: 105,
+    percentToNext: 75,
+    trend: '+15%'
   });
 
   return (
@@ -69,7 +81,7 @@ export default function Page() {
           <div className="container p-6">
             <h1 className="text-3xl font-bold mb-6 text-green-800 dark:text-green-200">Eco Travel Challenge</h1>
             
-            <Tabs defaultValue="quests" className="w-full">
+            <Tabs defaultValue="leaderboard" className="w-full">
               <TabsList className="grid grid-cols-3 mb-6">
                 <TabsTrigger value="competitions">Competitions</TabsTrigger>
                 <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
@@ -77,16 +89,244 @@ export default function Page() {
               </TabsList>
               
               <TabsContent value="competitions">
-                {/* Competition content to be added later */}
-                <div className="flex items-center justify-center h-64">
-                  <p className="text-muted-foreground">Competition content coming soon...</p>
-                </div>
-              </TabsContent>
+  <div className="space-y-6">
+    <div className="flex justify-between items-center">
+      <h2 className="text-2xl font-semibold">Active Competitions</h2>
+      <Badge variant="outline" className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+        <Trophy className="h-4 w-4 mr-1" />
+        3 Active
+      </Badge>
+    </div>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle>Spring Cycling Challenge</CardTitle>
+              <CardDescription>April 15 - May 15</CardDescription>
+            </div>
+            <Badge className="bg-amber-500">Featured</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="mb-4">Cycle 200km in one month and earn exclusive rewards.</p>
+          <div className="flex justify-between text-sm mb-2">
+            <span>Your progress:</span>
+            <span>68km / 200km</span>
+          </div>
+          <Progress value={34} className="h-2 mb-4" />
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <p className="text-sm text-muted-foreground">432 participants</p>
+          <Button variant="outline" className="border-green-600 text-green-700 hover:bg-green-50">View Details</Button>
+        </CardFooter>
+      </Card>
+      
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle>City Transit Warriors</CardTitle>
+              <CardDescription>April 1 - April 30</CardDescription>
+            </div>
+            <Badge className="bg-green-600">Team</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="mb-4">Join a team and compete to reduce carbon emissions in your city.</p>
+          <div className="flex justify-between text-sm mb-2">
+            <span>Team rank:</span>
+            <span>5th of 12</span>
+          </div>
+          <Progress value={60} className="h-2 mb-4" />
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <p className="text-sm text-muted-foreground">18 teams competing</p>
+          <Button variant="outline" className="border-green-600 text-green-700 hover:bg-green-50">View Details</Button>
+        </CardFooter>
+      </Card>
+    </div>
+    
+    <Card>
+      <CardHeader>
+        <CardTitle>Upcoming Competition</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center gap-4">
+          <div className="bg-green-100 dark:bg-green-900/40 p-4 rounded-lg">
+            <Calendar className="h-8 w-8 text-green-700" />
+          </div>
+          <div>
+            <h3 className="font-medium text-lg">Summer Sustainable Travel Festival</h3>
+            <p className="text-muted-foreground">Starts May 20, 2025</p>
+            <p className="mt-2">Grand prize: Electric scooter and sustainability kit</p>
+          </div>
+          <div className="ml-auto">
+            <Button>Pre-register</Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+</TabsContent>
               
               <TabsContent value="leaderboard">
-                {/* Leaderboard content to be added later */}
-                <div className="flex items-center justify-center h-64">
-                  <p className="text-muted-foreground">Leaderboard content coming soon...</p>
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-2xl font-semibold">April Leaderboard</h2>
+                    <Badge variant="outline" className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                      <ArrowUp className="h-4 w-4 mr-1 text-green-600" />
+                      {leaderboardData.trend} this week
+                    </Badge>
+                  </div>
+                  
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Top Eco Travelers</CardTitle>
+                      <CardDescription>Based on sustainable transport points earned this month</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="mb-8 h-64">
+                        <Plot
+                          data={[
+                            {
+                              type: 'bar',
+                              x: leaderboardData.labels,
+                              y: leaderboardData.values,
+                              marker: {
+                                color: leaderboardData.colors
+                              },
+                              text: leaderboardData.values.map(v => v + ' pts'),
+                              textposition: 'auto',
+                              hoverinfo: 'none',
+                              width: 0.6,
+                            }
+                          ]}
+                          layout={{
+                            margin: {t: 0, r: 0, l: 40, b: 40},
+                            paper_bgcolor: 'rgba(0,0,0,0)',
+                            plot_bgcolor: 'rgba(0,0,0,0)',
+                            autosize: true,
+                            xaxis: {
+                              tickangle: 0,
+                              fixedrange: true
+                            },
+                            yaxis: {
+                              title: 'Points',
+                              fixedrange: true
+                            },
+                            font: {
+                              family: 'Inter, sans-serif'
+                            }
+                          }}
+                          config={{
+                            displayModeBar: false,
+                            responsive: true
+                          }}
+                          style={{width: '100%', height: '100%'}}
+                        />
+                      </div>
+                      
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+  <div className="flex items-center gap-4">
+    <div className="h-12 w-12 rounded-full bg-green-100 text-green-800 font-bold flex items-center justify-center border-2 border-green-600">
+      👑
+    </div>
+    <div>
+      <p className="font-medium text-base sm:text-lg">You're in 2nd place!</p>
+      <p className="text-sm text-muted-foreground">
+        Just {leaderboardData.pointsToNext} points away from 1st place
+      </p>
+    </div>
+  </div>
+  <div className="flex items-center gap-2 text-sm sm:text-base">
+    <ArrowRight className="h-5 w-5 text-green-600" />
+    <span className="font-semibold text-green-700">
+      Keep pushing, you're almost there!
+    </span>
+  </div>
+</div>
+
+                      
+                      <div className="mt-6 space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span>Progress to 1st place</span>
+                          <span className="text-green-600 font-medium">{leaderboardData.percentToNext}%</span>
+                        </div>
+                        <Progress value={leaderboardData.percentToNext} className="h-2" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card>
+  <CardHeader className="pb-2">
+    <CardTitle className="text-lg">Top Performers</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div className="space-y-4">
+      {leaderboardData.labels.slice(0, 3).map((name, index) => (
+        <div key={index} className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-800 font-bold">
+            {index + 1}
+          </div>
+          <div className="w-10 h-10 rounded-full bg-green-100 text-green-800 flex items-center justify-center font-bold">
+            {name?.split(' ').map(n => n[0]).join('').slice(0, 2)}
+          </div>
+          <div className="flex-1">
+            <p className="font-medium">{name}</p>
+            <p className="text-sm text-muted-foreground">
+              {index === 0 ? 'Cycling Champion' : index === 1 ? 'Transport Master' : 'Walking Pro'}
+            </p>
+          </div>
+          <Badge variant={index === 0 ? "default" : index === 1 ? "secondary" : "outline"} className={index === 0 ? "bg-green-600" : ""}>
+            {leaderboardData.values[index]} pts
+          </Badge>
+        </div>
+      ))}
+    </div>
+  </CardContent>
+</Card>
+
+
+                    
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-lg">Your Stats</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                              <p className="text-sm text-muted-foreground">Total Distance</p>
+                              <p className="text-2xl font-bold">128.5 km</p>
+                            </div>
+                            <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                              <p className="text-sm text-muted-foreground">CO₂ Saved</p>
+                              <p className="text-2xl font-bold">45.2 kg</p>
+                            </div>
+                            <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                              <p className="text-sm text-muted-foreground">Quests Completed</p>
+                              <p className="text-2xl font-bold">14/20</p>
+                            </div>
+                            <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                              <p className="text-sm text-muted-foreground">Weekly Streak</p>
+                              <p className="text-2xl font-bold">8 weeks</p>
+                            </div>
+                          </div>
+                          
+                          <Alert className="border-green-200 dark:border-green-800">
+                            <Trophy className="h-4 w-4 text-green-600" />
+                            <AlertTitle>Weekly Challenge Tip</AlertTitle>
+                            <AlertDescription>
+                              Try cycling to work twice this week to overtake Sarah and reach 1st place!
+                            </AlertDescription>
+                          </Alert>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
               </TabsContent>
               

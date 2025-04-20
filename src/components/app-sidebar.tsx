@@ -45,7 +45,7 @@ const data = {
             url: "/rewards",
           },
           {
-            title: "Oboarding",
+            title: "Onboarding",
             url: "/on-board",
           },
           {
