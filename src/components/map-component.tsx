@@ -47,7 +47,7 @@ const PREDEFINED_LOCATIONS = {
   ]
 };
 
-export function MapComponent() {
+export function MapComponent({ onLocationChange }) {
   const mapRef = useRef(null);
   const [map, setMap] = useState(null);
   const [pointA, setPointA] = useState(null);
@@ -79,11 +79,8 @@ export function MapComponent() {
         if (!mapRef.current) return;
         
         // Initialize the map with UAE view
-        const newMap = L.map(mapRef.current, {
-          center: UAE_BOUNDS.center,
-          zoom: UAE_BOUNDS.zoom,
-          preferCanvas: true
-        });
+        // In your initializeMap function:
+const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UAE
         
         // Add tile layer from OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -105,6 +102,13 @@ export function MapComponent() {
       }
     };
   }, []);
+
+  // Pass location data to parent component when locations or distance changes
+  useEffect(() => {
+    if (onLocationChange && typeof onLocationChange === 'function') {
+      onLocationChange(locationA, locationB, distance);
+    }
+  }, [locationA, locationB, distance, onLocationChange]);
 
   // Handle location selection
   const selectLocation = useCallback(async (location, type) => {
@@ -235,8 +239,6 @@ export function MapComponent() {
         const distanceInMeters = pointALatLng.distanceTo(pointBLatLng);
         const distanceInKm = (distanceInMeters / 1000).toFixed(1);
         
-   
-        
         setDistance(distanceInKm);
         
         // Show warning about falling back to direct route
@@ -267,14 +269,39 @@ export function MapComponent() {
     setDistance(null);
     setShowStartLocations(false);
     setShowEndLocations(false);
+  }, [map]);
+
+  // Clear location handler
+  const clearLocation = useCallback((type) => {
+    if (!map) return;
     
-    // Reset view to UAE
-    map.setView(UAE_BOUNDS.center, UAE_BOUNDS.zoom);
+    if (type === 'a') {
+      setLocationA('');
+      if (markersRef.current.a) {
+        map.removeLayer(markersRef.current.a);
+        markersRef.current.a = null;
+        setPointA(null);
+      }
+    } else {
+      setLocationB('');
+      if (markersRef.current.b) {
+        map.removeLayer(markersRef.current.b);
+        markersRef.current.b = null;
+        setPointB(null);
+      }
+    }
+    
+    // Remove route if either point is cleared
+    if (polylineRef.current) {
+      map.removeLayer(polylineRef.current);
+      polylineRef.current = null;
+      setDistance(null);
+    }
   }, [map]);
 
   return (
-    <div className="w-full shadow-lg rounded-lg overflow-hidden">
-      <div className="bg-white dark:bg-slate-800 p-4 shadow-md">
+    <div className="w-full shadow-lg rounded-lg overflow-hidden border border-border">
+      <div className="bg-card p-4 shadow-md border py-6">
         <div className="flex flex-col space-y-4">
           {/* Location Input A */}
           <div className="relative">
@@ -298,17 +325,7 @@ export function MapComponent() {
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setLocationA('');
-                      if (markersRef.current.a && map) {
-                        map.removeLayer(markersRef.current.a);
-                        markersRef.current.a = null;
-                        setPointA(null);
-                        if (polylineRef.current) {
-                          map.removeLayer(polylineRef.current);
-                          polylineRef.current = null;
-                          setDistance(null);
-                        }
-                      }
+                      clearLocation('a');
                     }}
                     type="button"
                     aria-label="Clear location A"
@@ -358,17 +375,7 @@ export function MapComponent() {
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setLocationB('');
-                      if (markersRef.current.b && map) {
-                        map.removeLayer(markersRef.current.b);
-                        markersRef.current.b = null;
-                        setPointB(null);
-                        if (polylineRef.current) {
-                          map.removeLayer(polylineRef.current);
-                          polylineRef.current = null;
-                          setDistance(null);
-                        }
-                      }
+                      clearLocation('b');
                     }}
                     type="button"
                     aria-label="Clear location B"
@@ -428,7 +435,7 @@ export function MapComponent() {
                 </svg>
               </div>
               <div>
-                <div className="text-lg font-semibold">{} {distance} km</div>
+                <div className="text-lg font-semibold">{distance} km</div>
                 <div className="text-sm text-gray-500">Total Distance</div>
               </div>
             </div>
