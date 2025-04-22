@@ -55,8 +55,7 @@ export function MapComponent() {
   const [locationA, setLocationA] = useState('');
   const [locationB, setLocationB] = useState('');
   const [distance, setDistance] = useState(null);
-  const [duration, setDuration] = useState(null);
-  const [transportMode, setTransportMode] = useState('car');
+  const [isLoading, setIsLoading] = useState(false);
   const polylineRef = useRef(null);
   const markersRef = useRef({ a: null, b: null });
   const [showStartLocations, setShowStartLocations] = useState(false);
@@ -158,6 +157,32 @@ export function MapComponent() {
     }
   }, [map]);
 
+  // Fetch route from OSRM routing service
+  const fetchRoute = useCallback(async (startCoords, endCoords) => {
+    const url = `https://router.project-osrm.org/route/v1/driving/${startCoords[1]},${startCoords[0]};${endCoords[1]},${endCoords[0]}?overview=full&geometries=geojson`;
+    
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      
+      if (data.code !== 'Ok' || !data.routes || data.routes.length === 0) {
+        throw new Error('No route found');
+      }
+      
+      const route = data.routes[0];
+      return {
+        geometry: route.geometry.coordinates.map(coord => [coord[1], coord[0]]), // OSRM returns [lon, lat], Leaflet needs [lat, lon]
+        distance: route.distance / 1000, // Convert to kilometers
+      };
+    } catch (error) {
+      console.error('Error fetching route:', error);
+      return null;
+    }
+  }, []);
+
   // Calculate route between points
   const calculateRoute = useCallback(async () => {
     if (!markersRef.current.a || !markersRef.current.b || !map) return;
@@ -171,48 +196,58 @@ export function MapComponent() {
       map.removeLayer(polylineRef.current);
     }
     
-    // Create direct polyline between points
-    const polyline = L.polyline(
-      [
+    setIsLoading(true);
+    
+    try {
+      const routeData = await fetchRoute(
         [pointALatLng.lat, pointALatLng.lng],
         [pointBLatLng.lat, pointBLatLng.lng]
-      ],
-      { color: '#2563eb', weight: 4, opacity: 0.7 }
-    ).addTo(map);
-    
-    polylineRef.current = polyline;
-    
-    // Calculate distance in kilometers and estimate duration
-    const distanceInMeters = pointALatLng.distanceTo(pointBLatLng);
-    const distanceInKm = (distanceInMeters / 1000).toFixed(1);
-    
-    // Estimate duration based on transport mode
-    let speedKmh;
-    switch (transportMode) {
-      case 'car': speedKmh = 50; break;
-      case 'transit': speedKmh = 30; break;
-      case 'bike': speedKmh = 15; break;
-      case 'walking': speedKmh = 5; break;
-      default: speedKmh = 30;
+      );
+      
+      if (routeData) {
+        // Create polyline from route geometry
+        const polyline = L.polyline(routeData.geometry, {
+          color: '#2563eb',
+          weight: 4,
+          opacity: 0.7,
+          lineJoin: 'round'
+        }).addTo(map);
+        
+        polylineRef.current = polyline;
+        
+        setDistance(routeData.distance.toFixed(1));
+        
+        // Fit map to show the route with some padding
+        map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
+      } else {
+        // Fallback to straight line if routing fails
+        const polyline = L.polyline(
+          [
+            [pointALatLng.lat, pointALatLng.lng],
+            [pointBLatLng.lat, pointBLatLng.lng]
+          ],
+          { color: '#dc2626', weight: 4, opacity: 0.7, dashArray: '5, 5' }
+        ).addTo(map);
+        
+        polylineRef.current = polyline;
+        
+        // Calculate direct distance as fallback
+        const distanceInMeters = pointALatLng.distanceTo(pointBLatLng);
+        const distanceInKm = (distanceInMeters / 1000).toFixed(1);
+        
+   
+        
+        setDistance(distanceInKm);
+        
+        // Show warning about falling back to direct route
+        alert("Couldn't fetch road route. Showing direct line instead.");
+      }
+    } catch (error) {
+      console.error("Error calculating route:", error);
+    } finally {
+      setIsLoading(false);
     }
-    
-    const durationInHours = distanceInKm / speedKmh;
-    const durationInMinutes = Math.max(1, Math.round(durationInHours * 60));
-    
-    setDistance(distanceInKm);
-    setDuration(durationInMinutes);
-    
-    // Fit map to show the route with some padding
-    map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
-  }, [map, transportMode]);
-
-  // Change transport mode
-  const changeTransportMode = useCallback((mode) => {
-    setTransportMode(mode);
-    if (markersRef.current.a && markersRef.current.b) {
-      setTimeout(() => calculateRoute(), 100);
-    }
-  }, [calculateRoute]);
+  }, [map, fetchRoute]);
 
   // Reset everything
   const resetMap = useCallback(() => {
@@ -230,7 +265,6 @@ export function MapComponent() {
     setLocationA('');
     setLocationB('');
     setDistance(null);
-    setDuration(null);
     setShowStartLocations(false);
     setShowEndLocations(false);
     
@@ -273,7 +307,6 @@ export function MapComponent() {
                           map.removeLayer(polylineRef.current);
                           polylineRef.current = null;
                           setDistance(null);
-                          setDuration(null);
                         }
                       }
                     }}
@@ -334,7 +367,6 @@ export function MapComponent() {
                           map.removeLayer(polylineRef.current);
                           polylineRef.current = null;
                           setDistance(null);
-                          setDuration(null);
                         }
                       }
                     }}
@@ -364,80 +396,28 @@ export function MapComponent() {
             )}
           </div>
         </div>
-        
-        {/* Transportation Mode Options */}
-        <div className="mt-4 flex items-center justify-between overflow-x-auto pb-1">
-          <div 
-            className={`flex flex-col items-center p-2 rounded-lg cursor-pointer ${transportMode === 'car' ? 'bg-blue-100 dark:bg-blue-900/30' : 'hover:bg-gray-100 dark:hover:bg-slate-700'}`}
-            onClick={() => changeTransportMode('car')}
-          >
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${transportMode === 'car' ? 'bg-blue-500' : 'bg-gray-200 dark:bg-slate-600'}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={transportMode === 'car' ? 'text-white' : 'text-gray-500'}>
-                <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C1.4 11.3 1 12.1 1 13v3c0 .6.4 1 1 1h2"></path>
-                <circle cx="7" cy="17" r="2"></circle>
-                <circle cx="17" cy="17" r="2"></circle>
-              </svg>
-            </div>
-            <span className="text-xs mt-1 font-medium">Car</span>
-          </div>
-          
-          <div 
-            className={`flex flex-col items-center p-2 rounded-lg cursor-pointer ${transportMode === 'transit' ? 'bg-blue-100 dark:bg-blue-900/30' : 'hover:bg-gray-100 dark:hover:bg-slate-700'}`}
-            onClick={() => changeTransportMode('transit')}
-          >
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${transportMode === 'transit' ? 'bg-blue-500' : 'bg-gray-200 dark:bg-slate-600'}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={transportMode === 'transit' ? 'text-white' : 'text-gray-500'}>
-                <rect x="4" y="3" width="16" height="16" rx="2"></rect>
-                <path d="M4 11h16"></path>
-                <path d="M12 3v16"></path>
-              </svg>
-            </div>
-            <span className="text-xs mt-1 font-medium">Transit</span>
-          </div>
-          
-          <div 
-            className={`flex flex-col items-center p-2 rounded-lg cursor-pointer ${transportMode === 'bike' ? 'bg-blue-100 dark:bg-blue-900/30' : 'hover:bg-gray-100 dark:hover:bg-slate-700'}`}
-            onClick={() => changeTransportMode('bike')}
-          >
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${transportMode === 'bike' ? 'bg-blue-500' : 'bg-gray-200 dark:bg-slate-600'}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={transportMode === 'bike' ? 'text-white' : 'text-gray-500'}>
-                <circle cx="6" cy="15" r="4"></circle>
-                <circle cx="18" cy="15" r="4"></circle>
-                <path d="M6 15 9 3h7"></path>
-                <path d="m19 9-5 6"></path>
-              </svg>
-            </div>
-            <span className="text-xs mt-1 font-medium">Bike</span>
-          </div>
-          
-          <div 
-            className={`flex flex-col items-center p-2 rounded-lg cursor-pointer ${transportMode === 'walking' ? 'bg-blue-100 dark:bg-blue-900/30' : 'hover:bg-gray-100 dark:hover:bg-slate-700'}`}
-            onClick={() => changeTransportMode('walking')}
-          >
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${transportMode === 'walking' ? 'bg-blue-500' : 'bg-gray-200 dark:bg-slate-600'}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={transportMode === 'walking' ? 'text-white' : 'text-gray-500'}>
-                <path d="M13 22 9 17v-5l-4-3 3-3 2 2 1.5-1.5"></path>
-                <path d="m7 17 3-3"></path>
-                <path d="M16.5 2a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1"></path>
-                <path d="m13 7 1.5-4.5c.8 0 1.5.7 1.5 1.5v3.5"></path>
-                <path d="m13 7 3 5-3 5"></path>
-                <path d="m16 12-1 2-2.5 2"></path>
-              </svg>
-            </div>
-            <span className="text-xs mt-1 font-medium">Walk</span>
-          </div>
-        </div>
       </div>
       
       {/* Map Display */}
       <div 
         ref={mapRef} 
-        className="h-96 w-full"
+        className="h-96 w-full relative"
         style={{ zIndex: 0 }}
-      ></div>
+      >
+        {isLoading && (
+          <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center z-10">
+            <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-lg">
+              <div className="flex items-center space-x-3">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                <p className="text-sm font-medium">Finding best route...</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
       
       {/* Bottom Panel with Distance Info */}
-      {distance && duration && (
+      {distance && (
         <div className="bg-white dark:bg-slate-800 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -448,8 +428,8 @@ export function MapComponent() {
                 </svg>
               </div>
               <div>
-                <div className="text-lg font-semibold">{duration} min ({distance} km)</div>
-                <div className="text-sm text-gray-500">via fastest route</div>
+                <div className="text-lg font-semibold">{} {distance} km</div>
+                <div className="text-sm text-gray-500">Total Distance</div>
               </div>
             </div>
             
@@ -461,8 +441,6 @@ export function MapComponent() {
               Reset
             </Button>
           </div>
-          
-         
         </div>
       )}
     </div>
