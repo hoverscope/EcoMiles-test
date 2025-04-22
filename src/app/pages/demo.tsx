@@ -65,12 +65,12 @@ export default function Page() {
       icon: Car, 
       label: "Car", 
       description: "Door-to-door convenience with full control over your route and schedule",
-      points: 5,
+      points: 0,
       stats: [
         { icon: Clock, label: "Average travel time", value: "-" },
         { icon: Users, label: "Capacity", value: "1-5 people" },
         { icon: Leaf, label: "CO2 emissions", value: "-" },
-        { icon: Award, label: "Points", value: "5 pts" }
+        { icon: Award, label: "Points", value: "0 pts" }
       ]
     },
     { 
@@ -188,7 +188,7 @@ export default function Page() {
       case "Car":
         co2 = distance * CO2_FACTORS.Car;
         time = Math.round(distance / 50 * 60);
-        points = Math.round(5 * distance / 10);
+        points = Math.round(0 * distance / 10);
         break;
       case "Bicycle":
         co2 = 0;
