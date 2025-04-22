@@ -659,6 +659,8 @@ Sharing rides is more sustainable than traveling alone by car. For even greater 
                       className="w-full md:w-auto bg-green-700 hover:bg-green-600 text-white"
                       onClick={() => setShowReward(true)}
                     >
+                        View Summary
+
                     </Button>
                   </CardFooter>
                 </Card>
