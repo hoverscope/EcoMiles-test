@@ -445,7 +445,7 @@ Sharing rides is more sustainable than traveling alone by car. For even greater 
                 </Button>
                 
                 <Card className="overflow-hidden border-green-200 dark:border-green-800">
-                  <CardHeader className="bg-green-50 dark:bg-green-950 border-b">
+                  <CardHeader className="border-b">
                     <div className="flex items-center justify-between">
                       <div>
                         <Badge className="mb-2 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300">Ride Share</Badge>
@@ -596,8 +596,8 @@ Sharing rides is more sustainable than traveling alone by car. For even greater 
                 </Card>
               ) : (
                 <Card className="overflow-hidden border-green-200 dark:border-green-800">
-                  <CardHeader className="bg-green-100 dark:bg-green-900 border-b text-center">
-                    <div className="mx-auto bg-white dark:bg-slate-800 rounded-full p-4 w-16 h-16 flex items-center justify-center mb-3">
+                  <CardHeader className=" border-b text-center">
+                    <div className="mx-auto bg-slate-800 dark:bg-slate-800 rounded-full p-4 w-16 h-16 flex items-center justify-center mb-3">
                       <Check className="h-8 w-8 text-green-500" />
                     </div>
                     <CardTitle className="text-2xl text-green-800 dark:text-green-200">
