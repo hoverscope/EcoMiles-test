@@ -60,6 +60,7 @@ export default function Page() {
   const [earnedPoints, setEarnedPoints] = useState(0)
   const [showReward, setShowReward] = useState(false)
   
+  
   const transports = [
     { 
       icon: Car, 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, X, MapPin, Clock, RotateCw } from 'lucide-react';
 
 // UAE bounds (approximate)
 const UAE_BOUNDS = {
@@ -60,12 +60,17 @@ export function MapComponent({ onLocationChange }) {
   const markersRef = useRef({ a: null, b: null });
   const [showStartLocations, setShowStartLocations] = useState(false);
   const [showEndLocations, setShowEndLocations] = useState(false);
+  const [activeTab, setActiveTab] = useState('map'); // 'map' or 'details'
 
-  // Initialize map on component mount
+  const [tileLayer, setTileLayer] = useState(null);
+
+
   useEffect(() => {
     const initializeMap = async () => {
       if (typeof window !== "undefined" && !map) {
+        
         const L = await import('leaflet');
+        const isDarkMode = document.documentElement.classList.contains('dark');
         
         // Add Leaflet CSS if not already loaded
         if (!document.querySelector('[data-leaflet-css]')) {
@@ -75,19 +80,32 @@ export function MapComponent({ onLocationChange }) {
           link.setAttribute('data-leaflet-css', '');
           document.head.appendChild(link);
         }
-
+  
         if (!mapRef.current) return;
         
         // Initialize the map with UAE view
-        // In your initializeMap function:
-const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UAE
+        const newMap = L.map(mapRef.current, {
+          zoomControl: false,
+          attributionControl: false
+        }).setView([24.0, 54.0], 8); // Centered on UAE
         
-        // Add tile layer from OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        // Add tile layer from a modern-looking map provider
+        const tileUrl = isDarkMode
+          ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+          : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+          
+        const newTileLayer = L.tileLayer(tileUrl, {
           maxZoom: 19,
           updateWhenIdle: true,
           maxNativeZoom: 18
+        }).addTo(newMap);
+        
+        // Store the tile layer reference
+        setTileLayer(newTileLayer);
+        
+        // Add zoom control to bottom right
+        L.control.zoom({
+          position: 'bottomright'
         }).addTo(newMap);
         
         setMap(newMap);
@@ -102,6 +120,35 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
       }
     };
   }, []);
+
+
+  useEffect(() => {
+    // Set up a MutationObserver to watch for theme changes
+    if (map && tileLayer) {
+      const observer = new MutationObserver(() => {
+        const isDarkMode = document.documentElement.classList.contains('dark');
+        
+        // Update the tile layer URL based on current theme
+        tileLayer.setUrl(
+          isDarkMode
+            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+            : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+        );
+      });
+      
+      // Start observing theme changes on document.documentElement
+      observer.observe(document.documentElement, { 
+        attributes: true,
+        attributeFilter: ['class'] 
+      });
+      
+      return () => {
+        observer.disconnect();
+      };
+    }
+  }, [map, tileLayer]);
+
+  
 
   // Pass location data to parent component when locations or distance changes
   useEffect(() => {
@@ -125,9 +172,9 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
     // Create marker icon based on type
     const icon = L.divIcon({
       className: 'custom-div-icon',
-      html: `<div class="marker-pin ${type === 'a' ? 'bg-blue-500' : 'bg-red-500'} text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg">${type === 'a' ? 'A' : 'B'}</div>`,
-      iconSize: [30, 30],
-      iconAnchor: [15, 30]
+      html: `<div class="marker-pin ${type === 'a' ? 'bg-green-900' : 'bg-destructive'} text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg font-semibold">${type === 'a' ? 'A' : 'B'}</div>`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 32]
     });
     
     // Create marker
@@ -209,17 +256,21 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
       );
       
       if (routeData) {
-        // Create polyline from route geometry
+        // Create polyline from route geometry with modern style
         const polyline = L.polyline(routeData.geometry, {
-          color: '#2563eb',
-          weight: 4,
-          opacity: 0.7,
-          lineJoin: 'round'
+          color: '#006400',
+          weight: 5,
+          opacity: 0.8,
+          lineJoin: 'round',
+          lineCap: 'round',
+          className: 'route-path-shadow'
         }).addTo(map);
         
         polylineRef.current = polyline;
         
         setDistance(routeData.distance.toFixed(1));
+        
+       
         
         // Fit map to show the route with some padding
         map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
@@ -230,7 +281,14 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
             [pointALatLng.lat, pointALatLng.lng],
             [pointBLatLng.lat, pointBLatLng.lng]
           ],
-          { color: '#dc2626', weight: 4, opacity: 0.7, dashArray: '5, 5' }
+          { 
+            color: '#006400', 
+            weight: 4, 
+            opacity: 0.7, 
+            dashArray: '5, 5',
+            lineCap: 'round',
+            lineJoin: 'round'
+          }
         ).addTo(map);
         
         polylineRef.current = polyline;
@@ -241,8 +299,7 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
         
         setDistance(distanceInKm);
         
-        // Show warning about falling back to direct route
-        alert("Couldn't fetch road route. Showing direct line instead.");
+      
       }
     } catch (error) {
       console.error("Error calculating route:", error);
@@ -300,29 +357,30 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
   }, [map]);
 
   return (
-    <div className="w-full shadow-lg rounded-lg overflow-hidden border border-border">
-      <div className="bg-card p-4 shadow-md border py-6">
+    <div className="w-full rounded-xl overflow-hidden shadow-lg border border-zinc-200 bg-white dark:bg-card dark:border-zinc-900">
+      {/* Top White Card - Locations Input */}
+      <div className="bg-white dark:bg-card p-4 lg:p-6 border-b border-zinc-100 dark:border-zinc-900 rounded-t-xl">
         <div className="flex flex-col space-y-4">
           {/* Location Input A */}
           <div className="relative">
             <div className="flex items-center space-x-2">
-              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-medium">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-green-900 flex items-center justify-center text-white font-medium shadow-md">
                 A
               </div>
               <div className="relative flex-grow">
                 <Input
-                  placeholder="Select start location"
+                  placeholder="Select pickup location"
                   value={locationA}
                   readOnly
                   onClick={() => {
                     setShowStartLocations(!showStartLocations);
                     setShowEndLocations(false);
                   }}
-                  className="w-full pr-8 cursor-pointer"
+                  className="w-full pr-8 cursor-pointer bg-zinc-50 dark:bg-card border-zinc-200 dark:border-zinc-700 h-12 rounded-lg"
                 />
                 {locationA && (
                   <button
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 transform -tranzinc-y-1/2 text-zinc-400 hover:text-zinc-600"
                     onClick={(e) => {
                       e.stopPropagation();
                       clearLocation('a');
@@ -330,7 +388,7 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
                     type="button"
                     aria-label="Clear location A"
                   >
-                    ×
+                    <X className="h-4 w-4" />
                   </button>
                 )}
               </div>
@@ -338,15 +396,15 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
             
             {/* Start location dropdown */}
             {showStartLocations && (
-              <div className="absolute z-10 mt-1 w-full bg-white dark:bg-slate-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 max-h-60 overflow-auto">
+              <div className="absolute z-50 mt-1 w-full bg-white dark:bg-card shadow-xl rounded-lg border border-zinc-100 dark:border-zinc-700 max-h-60 overflow-auto">
                 {PREDEFINED_LOCATIONS.start.map(location => (
                   <div
                     key={location.id}
-                    className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer text-sm flex items-start"
+                    className="px-4 py-3 hover:bg-zinc-50 dark:hover:bg-card cursor-pointer text-sm flex items-center border-b border-zinc-50 dark:border-zinc-700 last:border-b-0"
                     onClick={() => selectLocation(location, 'a')}
                   >
-                    <Search className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0 text-gray-500" />
-                    <span>{location.name}</span>
+<MapPin className="h-4 w-4 mr-3 flex-shrink-0 text-green-600" />
+<span className="font-medium">{location.name}</span>
                   </div>
                 ))}
               </div>
@@ -356,7 +414,7 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
           {/* Location Input B */}
           <div className="relative">
             <div className="flex items-center space-x-2">
-              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-medium">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-destructive flex items-center justify-center text-white font-medium shadow-md">
                 B
               </div>
               <div className="relative flex-grow">
@@ -368,11 +426,11 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
                     setShowEndLocations(!showEndLocations);
                     setShowStartLocations(false);
                   }}
-                  className="w-full pr-8 cursor-pointer"
+                  className="w-full pr-8 cursor-pointer bg-card dark:bg-card border-zinc-200 dark:border-zinc-700 h-12 rounded-lg"
                 />
                 {locationB && (
                   <button
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 transform -tranzinc-y-1/2 text-zinc-400 hover:text-zinc-600"
                     onClick={(e) => {
                       e.stopPropagation();
                       clearLocation('b');
@@ -380,7 +438,7 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
                     type="button"
                     aria-label="Clear location B"
                   >
-                    ×
+                    <X className="h-4 w-4" />
                   </button>
                 )}
               </div>
@@ -388,15 +446,15 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
             
             {/* End location dropdown */}
             {showEndLocations && (
-              <div className="absolute z-10 mt-1 w-full bg-white dark:bg-slate-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 max-h-60 overflow-auto">
+              <div className="absolute z-50 mt-1 w-full bg-white dark:bg-card shadow-xl rounded-lg border border-zinc-400 dark:border-zinc-900 max-h-60 overflow-auto">
                 {PREDEFINED_LOCATIONS.end.map(location => (
                   <div
                     key={location.id}
-                    className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer text-sm flex items-start"
+                    className="px-4 py-3 hover:bg-zinc-50 dark:hover:bg-card cursor-pointer text-sm flex items-center border-b border-zinc-50 dark:border-zinc-700 last:border-b-0"
                     onClick={() => selectLocation(location, 'b')}
                   >
-                    <Search className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0 text-gray-500" />
-                    <span>{location.name}</span>
+<MapPin className="h-4 w-4 mr-3 flex-shrink-0 text-green-600" />
+<span className="font-medium">{location.name}</span>
                   </div>
                 ))}
               </div>
@@ -408,48 +466,57 @@ const newMap = L.map(mapRef.current).setView([24.0, 54.0], 8); // Centered on UA
       {/* Map Display */}
       <div 
         ref={mapRef} 
-        className="h-96 w-full relative"
+        className="h-96 w-full relative border  dark:border-zinc-900"
         style={{ zIndex: 0 }}
       >
         {isLoading && (
-          <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center z-10">
-            <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-lg">
-              <div className="flex items-center space-x-3">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
-                <p className="text-sm font-medium">Finding best route...</p>
+          <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-10">
+            <div className="bg-white dark:bg-zinc-800 p-5 rounded-xl shadow-xl">
+              <div className="flex items-center space-x-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <p className="text-base font-medium">Finding optimal route...</p>
               </div>
             </div>
           </div>
         )}
       </div>
-      
-      {/* Bottom Panel with Distance Info */}
+
       {distance && (
-        <div className="bg-white dark:bg-slate-800 p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-              </div>
-              <div>
-                <div className="text-lg font-semibold">{distance} km</div>
-                <div className="text-sm text-gray-500">Total Distance</div>
-              </div>
-            </div>
-            
-            <Button 
-              variant="outline" 
-              onClick={resetMap}
-              className="text-sm"
-            >
-              Reset
-            </Button>
+  <div className="bg-white dark:bg-card border-t border-zinc-100 dark:border-zinc-800">
+    <div className="p-4 lg:p-5 space-y-6">
+      
+      {/* Trip details */}
+      <div className="flex items-start space-x-3">
+        <div className="flex flex-col items-center">
+          <div className="w-3 h-3 rounded-full bg-green-900"></div>
+          <div className="w-0.5 h-12 bg-zinc-200 dark:bg-zinc-700"></div>
+          <div className="w-3 h-3 rounded-full bg-destructive"></div>
+        </div>
+        <div className="flex-1 space-y-4">
+          <div>
+            <div className="font-medium">{locationA}</div>
+            <div className="text-sm text-zinc-500 dark:text-zinc-400">Pickup location</div>
+          </div>
+          <div>
+            <div className="font-medium">{locationB}</div>
+            <div className="text-sm text-zinc-500 dark:text-zinc-400">Destination</div>
           </div>
         </div>
-      )}
+        <div className="text">
+          <div className="text-sm text-zinc-500 dark:text-zinc-400">Distance</div>
+          <div className="font-semibold mt-1">{distance} km</div>
+        </div>
+      </div>
+
+       
+      
+
+    </div>
+  </div>
+)}
+
+      
+     
     </div>
   );
 }
