@@ -41,10 +41,7 @@ const data = {
             title: "Challenges",
             url: "/challenges",
           },
-          {
-            title: "Rides",
-            url: "/rides",
-          },
+         
 
 
       ],
