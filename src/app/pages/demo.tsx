@@ -634,18 +634,20 @@ Sharing rides is more sustainable than traveling alone by car. For even greater 
                       </div>
                     </div>
                     
-                    <div className="mt-6 bg-green-50 dark:bg-green-950 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                      <h3 className="font-semibold text-xl mb-3 flex items-center justify-center">
-                        <Award className="text-yellow-500 mr-2 h-5 w-5" />
-                        Points Earned
-                      </h3>
-                      <div className="flex justify-center items-center text-4xl font-bold text-green-700 dark:text-green-300">
-                        +{earnedPoints}
-                      </div>
-                      <p className="text-center text-sm text-muted-foreground mt-2">
-                        For choosing {selectedTransport?.label} for this journey
-                      </p>
-                    </div>
+                    {selectedTransport?.label !== "Car" && (
+  <div className="mt-6 bg-green-50 dark:bg-green-950 p-4 rounded-lg border border-green-200 dark:border-green-800">
+    <h3 className="font-semibold text-xl mb-3 flex items-center justify-center">
+      <Award className="text-yellow-500 mr-2 h-5 w-5" />
+      Points Earned
+    </h3>
+    <div className="flex justify-center items-center text-4xl font-bold text-green-700 dark:text-green-300">
+      +{earnedPoints}
+    </div>
+    <p className="text-center text-sm text-muted-foreground mt-2">
+      For choosing {selectedTransport?.label} for this journey
+    </p>
+  </div>
+)}
                   </CardContent>
                   <CardFooter className="flex flex-col md:flex-row gap-3">
                     <Button 
@@ -655,13 +657,23 @@ Sharing rides is more sustainable than traveling alone by car. For even greater 
                     >
                       <ArrowLeft className="mr-2 h-4 w-4" /> Plan Another Journey
                     </Button>
-                    <Button 
-                      className="w-full md:w-auto bg-green-700 hover:bg-green-600 text-white"
-                      onClick={() => setShowReward(true)}
-                    >
-                        View Summary
+                    
+                    {selectedTransport?.label !== "Car" ? (
+  <Button 
+    className="w-full md:w-auto bg-green-700 hover:bg-green-600 text-white"
+    onClick={() => setShowReward(true)}
+  >
+    View Summary
+  </Button>
+) : (
+  <Button 
+    className="w-full md:w-auto bg-green-700 hover:bg-green-600 text-white"
+    onClick={resetJourney}
+  >
+    Complete Journey
+  </Button>
+)}
 
-                    </Button>
                   </CardFooter>
                 </Card>
               )}
@@ -669,8 +681,8 @@ Sharing rides is more sustainable than traveling alone by car. For even greater 
           )}
           
           {/* Reward Dialog */}
-          <Dialog open={showReward} onOpenChange={setShowReward}>
-            <DialogContent className="sm:max-w-md">
+          <Dialog open={showReward && selectedTransport?.label !== "Car"} onOpenChange={setShowReward}>
+<DialogContent className="sm:max-w-md">
               <DialogHeader>
                 <DialogTitle className="flex items-center justify-center text-2xl">
                   <Award className="h-6 w-6 text-yellow-500 mr-2" />
