@@ -40,15 +40,7 @@ export default function Page() {
     carpoolWeekly: 15
   });
 
-  const [leaderboardData, setLeaderboardData] = useState({
-    labels: ['Sarah K.', 'You', 'Michael R.', 'Priya T.'],
-    values: [1865, 1760, 1620, 1485],
-    colors: ['#84cc16', '#22c55e', '#10b981', '#14b8a6'],
-    rank: 2,
-    pointsToNext: 105,
-    percentToNext: 75,
-    trend: '+15%'
-  });
+  
 
   return (
     <ThemeProvider>
@@ -67,7 +59,7 @@ export default function Page() {
                   </BreadcrumbItem>
                   <BreadcrumbSeparator className="hidden md:block" />
                   <BreadcrumbItem>
-                    <BreadcrumbLink href="/demo" className="text-green-800 dark:text-green-200">Challenges</BreadcrumbLink>
+                    <BreadcrumbLink href="/challenges" className="text-green-800 dark:text-green-200">Challenges</BreadcrumbLink>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
@@ -81,10 +73,9 @@ export default function Page() {
           <div className="container p-6">
             <h1 className="text-3xl font-bold mb-6 text-green-800 dark:text-green-200">Eco Travel Challenge</h1>
             
-            <Tabs defaultValue="leaderboard" className="w-full">
-              <TabsList className="grid grid-cols-3 mb-6">
+            <Tabs defaultValue="competitions" className="w-full">
+              <TabsList className="grid grid-cols-2 mb-6">
                 <TabsTrigger value="competitions">Competitions</TabsTrigger>
-                <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
                 <TabsTrigger value="quests">Quests</TabsTrigger>
               </TabsList>
               
@@ -174,164 +165,7 @@ export default function Page() {
   </div>
 </TabsContent>
               
-              <TabsContent value="leaderboard">
-                <div className="space-y-6">
-                  <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-semibold">April Leaderboard</h2>
-                    <Badge variant="outline" className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
-                      <ArrowUp className="h-4 w-4 mr-1 text-green-600" />
-                      {leaderboardData.trend} this week
-                    </Badge>
-                  </div>
-                  
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Top Eco Travelers</CardTitle>
-                      <CardDescription>Based on sustainable transport points earned this month</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="mb-8 h-64">
-                        <Plot
-                          data={[
-                            {
-                              type: 'bar',
-                              x: leaderboardData.labels,
-                              y: leaderboardData.values,
-                              marker: {
-                                color: leaderboardData.colors
-                              },
-                              text: leaderboardData.values.map(v => v + ' pts'),
-                              textposition: 'auto',
-                              hoverinfo: 'none',
-                              width: 0.6,
-                            }
-                          ]}
-                          layout={{
-                            margin: {t: 0, r: 0, l: 40, b: 40},
-                            paper_bgcolor: 'rgba(0,0,0,0)',
-                            plot_bgcolor: 'rgba(0,0,0,0)',
-                            autosize: true,
-                            xaxis: {
-                              tickangle: 0,
-                              fixedrange: true
-                            },
-                            yaxis: {
-                              title: 'Points',
-                              fixedrange: true
-                            },
-                            font: {
-                              family: 'Inter, sans-serif'
-                            }
-                          }}
-                          config={{
-                            displayModeBar: false,
-                            responsive: true
-                          }}
-                          style={{width: '100%', height: '100%'}}
-                        />
-                      </div>
-                      
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-  <div className="flex items-center gap-4">
-    <div className="h-12 w-12 rounded-full bg-green-100 text-green-800 font-bold flex items-center justify-center border-2 border-green-600">
-      👑
-    </div>
-    <div>
-      <p className="font-medium text-base sm:text-lg">You're in 2nd place!</p>
-      <p className="text-sm text-muted-foreground">
-        Just {leaderboardData.pointsToNext} points away from 1st place
-      </p>
-    </div>
-  </div>
-  <div className="flex items-center gap-2 text-sm sm:text-base">
-    <ArrowRight className="h-5 w-5 text-green-600" />
-    <span className="font-semibold text-green-700">
-      Keep pushing, you're almost there!
-    </span>
-  </div>
-</div>
-
-                      
-                      <div className="mt-6 space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Progress to 1st place</span>
-                          <span className="text-green-600 font-medium">{leaderboardData.percentToNext}%</span>
-                        </div>
-                        <Progress value={leaderboardData.percentToNext} className="h-2" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card>
-  <CardHeader className="pb-2">
-    <CardTitle className="text-lg">Top Performers</CardTitle>
-  </CardHeader>
-  <CardContent>
-    <div className="space-y-4">
-      {leaderboardData.labels.slice(0, 3).map((name, index) => (
-        <div key={index} className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-800 font-bold">
-            {index + 1}
-          </div>
-          <div className="w-10 h-10 rounded-full bg-green-100 text-green-800 flex items-center justify-center font-bold">
-            {name?.split(' ').map(n => n[0]).join('').slice(0, 2)}
-          </div>
-          <div className="flex-1">
-            <p className="font-medium">{name}</p>
-            <p className="text-sm text-muted-foreground">
-              {index === 0 ? 'Cycling Champion' : index === 1 ? 'Transport Master' : 'Walking Pro'}
-            </p>
-          </div>
-          <Badge variant={index === 0 ? "default" : index === 1 ? "secondary" : "outline"} className={index === 0 ? "bg-green-600" : ""}>
-            {leaderboardData.values[index]} pts
-          </Badge>
-        </div>
-      ))}
-    </div>
-  </CardContent>
-</Card>
-
-
-                    
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">Your Stats</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
-                              <p className="text-sm text-muted-foreground">Total Distance</p>
-                              <p className="text-2xl font-bold">128.5 km</p>
-                            </div>
-                            <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
-                              <p className="text-sm text-muted-foreground">CO₂ Saved</p>
-                              <p className="text-2xl font-bold">45.2 kg</p>
-                            </div>
-                            <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
-                              <p className="text-sm text-muted-foreground">Quests Completed</p>
-                              <p className="text-2xl font-bold">14/20</p>
-                            </div>
-                            <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
-                              <p className="text-sm text-muted-foreground">Weekly Streak</p>
-                              <p className="text-2xl font-bold">8 weeks</p>
-                            </div>
-                          </div>
-                          
-                          <Alert className="border-green-200 dark:border-green-800">
-                            <Trophy className="h-4 w-4 text-green-600" />
-                            <AlertTitle>Weekly Challenge Tip</AlertTitle>
-                            <AlertDescription>
-                              Try cycling to work twice this week to overtake Sarah and reach 1st place!
-                            </AlertDescription>
-                          </Alert>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              </TabsContent>
+              
               
               <TabsContent value="quests">
                 <div className="space-y-6">

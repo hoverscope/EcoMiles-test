@@ -8,7 +8,7 @@ import Onboarding from './app/pages/onboarding.tsx'
 
 import Rewards from './app/pages/rewards.tsx'
 import Challenges from './app/pages/challenges.tsx'
-import Rides from './app/pages/rides.tsx'
+import Rides from './app/pages/leaderboard.tsx'
 
 
 
@@ -29,7 +29,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/on-board" element={<Onboarding />} />
         <Route path="/challenges" element={<Challenges />} />
-        <Route path="/rides" element={<Rides />} />
+        <Route path="/leaderboard" element={<Rides />} />
 
 
 

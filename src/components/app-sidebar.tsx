@@ -41,6 +41,10 @@ const data = {
             title: "Challenges",
             url: "/challenges",
           },
+          {
+            title: "Leaderboard",
+            url: "/leaderboard",
+          },
          
 
 
