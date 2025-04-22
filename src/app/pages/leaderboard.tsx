@@ -36,7 +36,7 @@ import Plot from 'react-plotly.js';
 export default function Page() {
  
   const [leaderboardData, setLeaderboardData] = useState({
-    labels: ['Sarah K.', 'You', 'Michael R.', 'Priya T.', 'Alex J.', 'Tomas L.'],
+    labels: ['Sarah K.', 'You', 'Mike', 'Priya', 'Alex', 'Tomas'],
     values: [1865, 1760, 1620, 1485, 1320, 1210],
     colors: ['#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9'],
     rank: 2,
@@ -99,21 +99,28 @@ export default function Page() {
                             }
                           ]}
                           layout={{
-                            margin: {t: 0, r: 0, l: 40, b: 40},
+                            margin: { t: 0, r: 0, l: 40, b: 40 },
                             paper_bgcolor: 'rgba(0,0,0,0)',
                             plot_bgcolor: 'rgba(0,0,0,0)',
                             autosize: true,
                             xaxis: {
                               tickangle: 0,
-                              fixedrange: true
+                              fixedrange: true,
+                              showgrid: false,
+                              color: '#888' // light gray that works in both themes
                             },
                             yaxis: {
-                              title: 'Points',
-                              fixedrange: true
+                              title: {
+                                font: { color: '#888' }
+                              },
+                              fixedrange: true,
+                              showgrid: false,
+                              color: '#888'
                             },
                             font: {
-                              family: 'Inter, sans-serif'
-                            }
+                              family: 'Inter, sans-serif',
+                              color: '#888' // font color for everything else
+                            },
                           }}
                           config={{
                             displayModeBar: false,
@@ -143,7 +150,7 @@ export default function Page() {
               {/* Daily/Weekly/Monthly strain */}
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-lg text-green-500 font-medium">DAY STRAIN</h2>
+                  <h2 className="text-lg text-green-500 font-medium">Points Average</h2>
                   <p className="text-xl font-bold">{(Math.random() * 5 + 3).toFixed(1)} avg</p>
                 </div>
                 <div className="text-right">
@@ -178,7 +185,6 @@ export default function Page() {
                              index === 2 ? 'Walking 20.3' :
                              `Eco Travel ${(Math.random() * 5 + 15).toFixed(1)}`}
                           </p>
-                          <p className="text-sm text-slate-500">{(Math.floor(Math.random() * 3000) + 1500).toLocaleString()} Calories</p>
                         </div>
                       </div>
                     </div>
@@ -194,44 +200,48 @@ export default function Page() {
                 </CardHeader>
                 <CardContent className="pt-6">
                   <div className="relative h-60 flex items-end justify-center">
-                    {/* Second Place */}
-                    <div className="absolute bottom-0 left-0 w-1/3 flex flex-col items-center">
-                      <Avatar className="h-16 w-16 rounded-full border-4 border-slate-200 mb-2">
-                        <AvatarFallback className="bg-green-100 text-green-800">
-                          {leaderboardData.labels[1]?.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="bg-slate-200 dark:bg-slate-700 w-full rounded-t-lg h-28 flex flex-col items-center justify-end p-2">
-                        <Badge className="mb-2 bg-blue-500">{leaderboardData.values[1]} pts</Badge>
-                        <div className="bg-slate-300 dark:bg-slate-600 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">2</div>
-                      </div>
-                    </div>
-                    
-                    {/* First Place */}
-                    <div className="absolute bottom-0 left-1/3 w-1/3 flex flex-col items-center z-10">
-                      <Avatar className="h-20 w-20 rounded-full border-4 border-yellow-400 mb-2">
-                        <AvatarFallback className="bg-green-100 text-green-800">
-                          {leaderboardData.labels[0]?.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="bg-yellow-100 dark:bg-yellow-900 w-full rounded-t-lg h-40 flex flex-col items-center justify-end p-2">
-                        <Badge className="mb-2 bg-yellow-500">{leaderboardData.values[0]} pts</Badge>
-                        <div className="bg-yellow-400 dark:bg-yellow-600 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">1</div>
-                      </div>
-                    </div>
-                    
-                    {/* Third Place */}
-                    <div className="absolute bottom-0 right-0 w-1/3 flex flex-col items-center">
-                      <Avatar className="h-14 w-14 rounded-full border-4 border-amber-700 mb-2">
-                        <AvatarFallback className="bg-green-100 text-green-800">
-                          {leaderboardData.labels[2]?.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="bg-amber-100 dark:bg-amber-900/50 w-full rounded-t-lg h-20 flex flex-col items-center justify-end p-2">
-                        <Badge className="mb-2 bg-amber-700">{leaderboardData.values[2]} pts</Badge>
-                        <div className="bg-amber-700 dark:bg-amber-800 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">3</div>
-                      </div>
-                    </div>
+                  
+                  {/* First Place */}
+<div className="absolute bottom-0 left-1/3 w-1/3 flex flex-col items-center z-10">
+  <Avatar className="h-20 w-20 rounded-full border-4 border-yellow-400 mb-2">
+    <AvatarFallback className="bg-yellow-200 text-yellow-800">
+      {leaderboardData.labels[0]?.split(' ').map(n => n[0]).join('').slice(0, 2)}
+    </AvatarFallback>
+  </Avatar>
+  <div className="bg-yellow-300 dark:bg-yellow-500 w-full rounded-t-lg h-40 flex flex-col items-center justify-end p-2">
+    <Badge className="mb-2 bg-yellow-600 text-white">{leaderboardData.values[0]} pts</Badge>
+    <div className="bg-yellow-500 dark:bg-yellow-700 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg text-white">1</div>
+  </div>
+</div>
+
+{/* Second Place */}
+<div className="absolute bottom-0 left-0 w-1/3 flex flex-col items-center">
+  <Avatar className="h-16 w-16 rounded-full border-4 border-blue-300 mb-2">
+    <AvatarFallback className="bg-blue-100 text-blue-800">
+      {leaderboardData.labels[1]?.split(' ').map(n => n[0]).join('').slice(0, 2)}
+    </AvatarFallback>
+  </Avatar>
+  <div className="bg-blue-100 dark:bg-blue-500 w-full rounded-t-lg h-28 flex flex-col items-center justify-end p-2">
+    <p className="font-bold text-blue-900 dark:text-white">{leaderboardData.labels[1]}</p>
+    <Badge className="mb-2 bg-blue-600 text-white">{leaderboardData.values[1]} pts</Badge>
+    <div className="bg-blue-500 dark:bg-blue-700 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg text-white">2</div>
+  </div>
+</div>
+
+{/* Third Place */}
+<div className="absolute bottom-0 right-0 w-1/3 flex flex-col items-center">
+  <Avatar className="h-14 w-14 rounded-full border-4 border-amber-700 mb-2">
+    <AvatarFallback className="bg-amber-100 text-amber-800">
+      {leaderboardData.labels[2]?.split(' ').map(n => n[0]).join('').slice(0, 2)}
+    </AvatarFallback>
+  </Avatar>
+  <div className="bg-amber-200 dark:bg-amber-600 w-full rounded-t-lg h-20 flex flex-col items-center justify-end p-2">
+    <Badge className="mb-2 bg-amber-700 text-white">{leaderboardData.values[2]} pts</Badge>
+    <div className="bg-amber-700 dark:bg-amber-800 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg text-white">3</div>
+  </div>
+</div>
+
+
                   </div>
                 </CardContent>
               </Card>
