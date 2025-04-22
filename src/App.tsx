@@ -90,7 +90,7 @@ export default function Page() {
                 Welcome to the Green Miles
               </h1>
               <p className="text-lg text mb-6 max-w-3xl mx-auto">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.
+              An Innovative platform that aims to solve the problem of Traffic that incentivizes the use of sustainable transport daily with gamified green travel using reward schemes and individual carbon footprint tracking. The venture will help solve the issue of under utilization of public transport at major events in the UAE alongside enabling the sale of carbon credits through carbon avoidance.
               </p>
               <Button variant="outline"
                 onClick={() => (window.location.href = "/demo")}
